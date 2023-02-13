@@ -79,29 +79,35 @@ namespace chili
 
 int main()
 {
-	// const char data[] = "abc\n\n123";
-	// std::ofstream out("test.txt", std::ios::binary);
-	// // jeœli zapisujemy dane do pliku które zawieraj¹ tylko liczby ipt. to powinno siê je zapisywaæ w formacie std::ios::binary  //
-	// for ( char c: data )
-	// {
-	// 	if (c == 0)
-	// 	{
-	// 		break;
-	// 	}
-	// 	out.put(c);
-	// }
-	// 
-	// std::ofstream out2("boi.dat", std::ios::binary);
-	// const int myInt = 69420;
-	// out2.write(reinterpret_cast<const char*>(&myInt), sizeof(myInt)); // podajemy rozmiar zmiennej( int w c++ to 4 bajty (32 bity))
-	// // do funkcji read i write z biblioteki fstream trzeba stosowaæ reinterpret_cast<char*>, poniewa¿ przyjmuj¹ one wskaŸnik jako parametr
+		chili::print("(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
+		char odp = _getch();
+		
+			if (odp == 'q')
+			{
+				chili::print("\n\nsayonara");
+				return 0;
+			}
 
-	std::ifstream in2("boi.dat", std::ios::binary); // odczytywanie danych, które wpisaliœmy wczeœniej do pliku
-	int data2;
-	in2.read(reinterpret_cast<char*>(&data2), sizeof(data2)); 
-	char buffer[10];
-	chili::int2str(data2, buffer, 10);
-	chili::print(buffer);
+			else if (odp == 'p')
+			{
+				std::ifstream in("derp.txt");
+				for (char c = in.get(); in.good();  c = in.get() )
+				{
+					_putch(c );
+				}
+			}
+			else if (odp == 'a')
+			{
+				chili::print("\n\n ");
+				std::ofstream out("derp.txt");
+				for (char c = _getch(); c != 13; c = _getch())
+				{
+					_putch(c);
+					out.put(c);
+				}
+			}
+		
+	
 
 	while (!_kbhit());
 	return 0;
