@@ -1,14 +1,15 @@
 #include <conio.h>
-
-void print(const char* s)
+namespace cypu
+{
+	void print(const char* s)
 {
 	for (; *s != 0; s++)
 	{
 		_putch(*s);
 	}
 }
-
-void read(char* buff, int size)
+	
+	void read(char* buff, int size)
 {
 	const char* const pEnd = buff + size;
 	for (char c = _getch(); c != 13 && (buff + 1 < pEnd); c = _getch(), buff++)
@@ -18,8 +19,8 @@ void read(char* buff, int size)
 	}
 	*buff = 0;
 }
-
-int str2Int(const char* s)
+	
+	int str2Int(const char* s)
 {
 	const char* p = s;
 	for (; *p >= '0' && *p <= '9'; p++);
@@ -35,8 +36,8 @@ int str2Int(const char* s)
 	}
 	return val;
 }
-
-void int2Str(int* s)
+	
+	void int2Str(int* s)
 {
 	print("\n");
 
@@ -89,8 +90,8 @@ void int2Str(int* s)
 		}
 	}
 }
-
-void fib(const int getNumber, int* s)
+	
+	void fib(const int getNumber, int* s)
 {
 	int* p = s;
 	int n = 0;
@@ -114,32 +115,88 @@ void fib(const int getNumber, int* s)
 	}
 	int2Str(&n);
 }
+}
 
-void strrev(char* pl)
+namespace chili
 {
-	// scan to start point
-	char* pr = pl;
-	for (; *pr != 0; pr++);
-	pr--;
-
-	for (; pl < pr; pl++, pr--)
+	void read(char* buf, int maxSize)
 	{
-		const char temp = *pl;
-		*pl = *pr;
-		*pr = temp;
+		const char* const pEnd = buf + maxSize;
+		for (char c = _getch(); c != 13 && (buf + 1 < pEnd); c = _getch(), buf++)
+		{
+			_putch(c);
+			*buf = c;
+		}
+		*buf = 0;
+	}
+
+	int str2int(const char* s)
+	{
+		// scan to start point
+		const char* p = s;
+		for (; *p >= '0' && *p <= '9'; p++);
+		p--;
+
+		int val = 0;
+		int place = 1;
+		// convert place values and accumulate
+		for (; p >= s; p--)
+		{
+			val += (*p - '0') * place;
+			place *= 10;
+		}
+
+		return val;
+	}
+
+	int fib(int n)
+	{
+		if (n < 2)
+		{
+			return n;
+		}
+		return fib(n - 1) + fib(n - 2);
+	}
+
+	void strrev(char* pl)
+	{
+		// scan to start point
+		char* pr = pl;
+		for (; *pr != 0; pr++);
+		pr--;
+
+		for (; pl < pr; pl++, pr--)
+		{
+			const char temp = *pl;
+			*pl = *pr;
+			*pr = temp;
+		}
+	}
+
+	void int2str(int val, char* buf, int size)
+	{
+		char* const pStart = buf;
+		char* const pEnd = buf + size;
+		for (; val > 0 && (buf + 1 < pEnd); val /= 10, buf++)
+		{
+			*buf = '0' + val % 10;
+		}
+		*buf = 0;
+		strrev(pStart);
 	}
 }
 
+
 int main()
 {
-	print("\nPodaj liczbe: ");
+	cypu::print("\nPodaj liczbe: ");
 	char number[3];
-	read(number, 3);
-	const int GetNumber = str2Int(number);
+	cypu::read(number, 3);
+	const int GetNumber = cypu::str2Int(number);
 	int Stored[100];
 	Stored[0] = 0;
 	Stored[1] = 1;
-	fib(GetNumber, &Stored[2]);
+	cypu::fib(GetNumber, &Stored[2]);
 
 	while (!_kbhit());
 	return 0;
