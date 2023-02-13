@@ -1,5 +1,5 @@
 #include <conio.h>
-
+#include <fstream>
 namespace chili
 {
 	void print(const char* s)
@@ -79,15 +79,44 @@ namespace chili
 
 int main()
 {
-	char answer[10];
+	std::ifstream in("derp.txt");
 
-	chili::print("Enter a number: ");
-	chili::read(answer,10);
+	if (!in)
+	{
+		chili::print( "\n\n Failed to open file" );
+		while (!_kbhit());
+		return -1;
+	}
 
-	const int fibNumber = chili::fib(chili::str2int(answer));
-	chili::int2str(fibNumber, answer, 10);
-	chili::print("\n");
-	chili::print(answer);
+	in.seekg(0, std::ios::end);
+	const int length = in.tellg();
+
+	chili::print(" File size is: ");
+	char buffer[10];
+	chili::int2str(length, buffer, 10);
+	chili::print(buffer);
+	chili::print("\n\n");
+
+	in.seekg(0, std::ios::beg);
+
+	for (char c = in.get() ; in.good() ; c = in.get())
+	{
+		_putch( c );
+	}
+
+	if( in.bad())
+	{
+		chili::print( "\n\n Bad shit happend mate" );
+	}
+	else if(in.eof())
+	{
+		chili::print( "\n\n Succesfully reached end of file" );
+	}
+	else
+	{
+		chili::print( "\n\n Some kind of fail?" );
+	}
+
 	while (!_kbhit());
 	return 0;
 }
