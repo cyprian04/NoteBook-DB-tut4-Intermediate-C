@@ -90,7 +90,6 @@ int main()
 
 	in.seekg(0, std::ios::end);
 	const int length = in.tellg();
-
 	chili::print(" File size is: ");
 	char buffer[10];
 	chili::int2str(length, buffer, 10);
@@ -106,16 +105,27 @@ int main()
 
 	if( in.bad())
 	{
-		chili::print( "\n\n Bad shit happend mate" );
+		chili::print( "\n\n Bad shit happend" );
 	}
 	else if(in.eof())
 	{
-		chili::print( "\n\n Succesfully reached end of file" );
+		chili::print( "\n\n Successfully reached end of file" );
 	}
 	else
 	{
 		chili::print( "\n\n Some kind of fail?" );
 	}
+
+	std::ofstream out("out.txt");
+	chili::print("\n\n");
+
+	for (char c = _getch(); c != 13 ; c = _getch())
+	{
+		_putch(c);
+		out.put(c);
+	}
+	out.seekp(10);
+
 
 	while (!_kbhit());
 	return 0;
