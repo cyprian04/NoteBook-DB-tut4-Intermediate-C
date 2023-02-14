@@ -77,60 +77,115 @@ namespace chili
 	}
 }
 
-namespace cypu 
+class Database
 {
-	void print() {
+public:
+
+	void select() 
+	{
+		chili::print("\n(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
+		char odp = _getch();
+		choice(odp);
+	}
+
+	void choice(char p)
+	{
+		if (p == 'q')
+		{
+			chili::print("\n\n	koniec	\n\n");
+		}
+
+		else if (p == 'p')
+		{
+			print(filename);
+		}
+
+		else if (p == 'a')
+		{
+			add(filename);
+		}
+
+		else if (p == 's')
+		{
+			save(SomeTypedName, SomeTypedValue);
+		}
+
+		else if (p == 'l')
+		{
+			load();
+		}
+	
+		else
+		{
+			chili::print("\n");
+		}
+	}
+
+	void print(char* fileN) {
 
 		chili::print("\n\n");
-		std::ifstream in("derp.txt");
+
+		std::ifstream in(fileN);
 		for (char c = in.get(); in.good(); c = in.get())
 		{
 			_putch(c);
 		}
+
 		chili::print("\n\n");
 	}
 
-	void add()
+	void add(char* fileN)
 	{
-		std::ofstream out("derp.txt");
+		std::ofstream out(fileN, std::ios::app);
 
-		char repeat = 'a';
-		while (repeat =='a')
+		if (out.fail())
 		{
-			repeat = '0';
+			chili::print("\n u don't have a file yet ;)");
 
 			chili::print("\n\n Enter Name: ");
-			for (char c = _getch(); c != 13; c = _getch())
+			chili::read(SomeTypedName, 10);
+
+			chili::print("\n\n Enter value: ");
+			chili::read(SomeTypedValue, 3);
+
+		}
+		else if (out.good())
+		{
+			bool once = true;
+			while (once)
 			{
-				_putch(c);
-				out.put(c);
+				
+				chili::print("\n\n Enter Name: ");
+				for (char c = _getch(); c != 13; c = _getch())
+				{
+					_putch(c);
+					out.put(c);
+				}
+
+				char space = ' ';
+				out.put(space);
+
+				chili::print("\n\n Enter value: ");
+				for (char c = _getch(); c != 13; c = _getch())
+				{
+					_putch(c);
+					out.put(c);
+				}
+
+				char endline = '\n';
+				out.put(endline);
+				chili::print("\n");
+				once = false;
 			}
-
-			char space = ' ';
-			out.put(space);
-
-			chili::print("\n\n Enter number: ");
-			for (char c = _getch(); c != 13; c = _getch())
-			{
-				_putch(c);
-				out.put(c);
-			}
-
-			char endline = '\n';
-			out.put(endline);
-			chili::print("\n");
-			
-			chili::print("(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
-			repeat = _getch();
 		}
 	}
 
-	void load(char* f)
+	void load()
 	{
 		chili::print("\n\nEnter a file name to load: ");
 
-		chili::read(f, 10);
-		std::ifstream in(f);
+		chili::read(filename, 10);
+		std::ifstream in(filename);
 
 		chili::print("\n\nContent of the file\n==================== \n\n");
 
@@ -139,59 +194,53 @@ namespace cypu
 			_putch(c);
 		}
 		chili::print("\n\n");
-	}
-}
+	} 
 
-int main()
-{
-	char filename[10];
-	bool once = true;
-
-	while (once)
-	{		
-		once = false;
-		chili::print("\n(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
-		char odp = _getch();
+	void save(char* name, char* value)
+	{
+		const char verify = filename[0]; // wa¿na rzecz, narazie zostaw
 		
-		if (odp == 'q')
-		{
-			chili::print("\n\nsayonara");
-			return 0;
-		}
+		if (verify < 0 && *value >= 0)
 
-		else if (odp == 'p')
 		{
-			cypu::print();
-			once = true;
-		}
-
-		else if (odp == 'a')
-		{
-			cypu::add();
-			once = true;
-		}
-
-		else if (odp == 's')
-		{
+			chili::print("\n Save file as: ");
 
 			chili::read(filename, 10);
 			std::ofstream out(filename);
-			once = true;
-		}
 
-		else if (odp == 'l')
-		{
-			cypu::load(filename);
-			once = true;
-		}
+			const char* const pEnd = name + 10;
+			for (char* c = name; *c != 0 && (name+1 < pEnd); c = name, name++)
+			{
+				out.put(*c);
+			}
 
-		else
+			const char* const vEnd = value + 3;
+			for (char* c = value; *c != 0 && (name+1 < vEnd); *c = value, value++)// poprawiæ usterke z wyœwietlaniem
+			{
+				out.put(*c);
+			}
+		}
+		else if(*value < 0 && verify < 0)
 		{
-			once = true;
-			chili::print("\n");
+			chili::print("\n\n There's no data to save to the file \n\n");
 		}
 	}
-	
+
+private:
+
+	char filename[10];
+	char SomeTypedName[10];
+	char SomeTypedValue[3];
+};
+
+
+int main()
+{
+	Database data;	
+	while (true)
+	{
+		data.select();
+	}
 	while (!_kbhit());
 	return 0;
 }
