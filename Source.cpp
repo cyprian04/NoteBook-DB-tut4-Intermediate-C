@@ -215,7 +215,7 @@ public:
 			}
 
 			const char* const vEnd = value + 3;
-			for (char* c = value; *c != 0 && (name+1 < vEnd); *c = value, value++)// poprawiæ usterke z wyœwietlaniem
+			for (char* c = value; *c != 0 && (name+1 < vEnd); c = value, value++)// poprawiæ usterke z wyœwietlaniem
 			{
 				out.put(*c);
 			}
