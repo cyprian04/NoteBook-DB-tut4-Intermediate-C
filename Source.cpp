@@ -77,8 +77,48 @@ namespace chili
 	}
 }
 
+namespace cypu 
+{
+	void print() {
+
+		chili::print("\n\n ");
+		std::ifstream in("derp.txt");
+		for (char c = in.get(); in.good(); c = in.get())
+		{
+			_putch(c);
+		}
+		chili::print("\n\n");
+	}
+
+	void add()
+	{
+
+		chili::print("\n\n Enter Name: ");
+		std::ofstream out("derp.txt");
+		for (char c = _getch(); c != 13; c = _getch())
+		{
+			_putch(c);
+			out.put(c);
+		}
+
+		char space = ' ';
+		out.put(space);
+
+		chili::print("\n\n Enter number: ");
+		for (char c = _getch(); c != 13; c = _getch())
+		{
+			_putch(c);
+			out.put(c);
+		}
+		chili::print("\n\n");
+	}
+}
 int main()
 {
+	bool once = true;
+	while (once)
+	{
+		once = false;
 		chili::print("(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
 		char odp = _getch();
 		
@@ -90,23 +130,15 @@ int main()
 
 			else if (odp == 'p')
 			{
-				std::ifstream in("derp.txt");
-				for (char c = in.get(); in.good();  c = in.get() )
-				{
-					_putch(c );
-				}
+				cypu::print();
+				once = true;
 			}
 			else if (odp == 'a')
 			{
-				chili::print("\n\n ");
-				std::ofstream out("derp.txt");
-				for (char c = _getch(); c != 13; c = _getch())
-				{
-					_putch(c);
-					out.put(c);
-				}
+				cypu::add();
+				once = true;
 			}
-		
+	}
 	
 
 	while (!_kbhit());
