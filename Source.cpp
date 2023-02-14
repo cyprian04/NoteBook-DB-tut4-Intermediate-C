@@ -81,7 +81,7 @@ namespace cypu
 {
 	void print() {
 
-		chili::print("\n\n ");
+		chili::print("\n\n");
 		std::ifstream in("derp.txt");
 		for (char c = in.get(); in.good(); c = in.get())
 		{
@@ -92,55 +92,106 @@ namespace cypu
 
 	void add()
 	{
-
-		chili::print("\n\n Enter Name: ");
 		std::ofstream out("derp.txt");
-		for (char c = _getch(); c != 13; c = _getch())
+
+		char repeat = 'a';
+		while (repeat =='a')
 		{
-			_putch(c);
-			out.put(c);
+			repeat = '0';
+
+			chili::print("\n\n Enter Name: ");
+			for (char c = _getch(); c != 13; c = _getch())
+			{
+				_putch(c);
+				out.put(c);
+			}
+
+			char space = ' ';
+			out.put(space);
+
+			chili::print("\n\n Enter number: ");
+			for (char c = _getch(); c != 13; c = _getch())
+			{
+				_putch(c);
+				out.put(c);
+			}
+
+			char endline = '\n';
+			out.put(endline);
+			chili::print("\n");
+			
+			chili::print("(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
+			repeat = _getch();
 		}
+	}
 
-		char space = ' ';
-		out.put(space);
+	void load(char* f)
+	{
+		chili::print("\n\nEnter a file name to load: ");
 
-		chili::print("\n\n Enter number: ");
-		for (char c = _getch(); c != 13; c = _getch())
+		chili::read(f, 10);
+		std::ifstream in(f);
+
+		chili::print("\n\nContent of the file\n==================== \n\n");
+
+		for (char c = in.get(); in.good(); c = in.get())
 		{
 			_putch(c);
-			out.put(c);
 		}
 		chili::print("\n\n");
 	}
 }
+
 int main()
 {
+	char filename[10];
 	bool once = true;
+
 	while (once)
-	{
+	{		
 		once = false;
-		chili::print("(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
+		chili::print("\n(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
 		char odp = _getch();
 		
-			if (odp == 'q')
-			{
-				chili::print("\n\nsayonara");
-				return 0;
-			}
+		if (odp == 'q')
+		{
+			chili::print("\n\nsayonara");
+			return 0;
+		}
 
-			else if (odp == 'p')
-			{
-				cypu::print();
-				once = true;
-			}
-			else if (odp == 'a')
-			{
-				cypu::add();
-				once = true;
-			}
+		else if (odp == 'p')
+		{
+			cypu::print();
+			once = true;
+		}
+
+		else if (odp == 'a')
+		{
+			cypu::add();
+			once = true;
+		}
+
+		else if (odp == 's')
+		{
+
+			chili::read(filename, 10);
+			std::ofstream out(filename);
+			once = true;
+		}
+
+		else if (odp == 'l')
+		{
+			cypu::load(filename);
+			once = true;
+		}
+
+		else
+		{
+			once = true;
+			chili::print("\n");
+		}
 	}
 	
-
 	while (!_kbhit());
 	return 0;
 }
