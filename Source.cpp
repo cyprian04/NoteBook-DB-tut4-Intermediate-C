@@ -93,6 +93,7 @@ public:
 		if (p == 'q')
 		{
 			chili::print("\n\n	koniec	\n\n");
+			go = false;
 		}
 
 		else if (p == 'p')
@@ -107,7 +108,7 @@ public:
 
 		else if (p == 's')
 		{
-			save(SomeTypedName, SomeTypedValue);
+			save();
 		}
 
 		else if (p == 'l')
@@ -138,11 +139,11 @@ public:
 	{
 		std::ofstream out(fileN, std::ios::app);
 
-		const char verify = filename[0];
+		const char verify = fileN[0];
 		if (verify < 0)
 		{
-			char p[] = "Prototyp.txt";
-			for (int i = 0; i < 13; i++)
+			char p[] = "P.txt";
+			for (int i = 0; i < 6; i++)
 			{
 				filename[i] = p[i];
 			}
@@ -173,7 +174,7 @@ public:
 			
 		}
 
-		if (out.good())
+		else if (out.good())
 		{
 				chili::print("\n\n Enter Name: ");
 				for (char c = _getch(); c != 13; c = _getch())
@@ -213,37 +214,54 @@ public:
 		}
 		chili::print("\n\n");
 	} 
-
-	void save(char* name, char* value)
+	//ok
+	void save()
 	{
 		const char verify = filename[0];
 		
-		if (*value < 0 && verify < 0 && *name < 0)
+		if ( verify < 0 )
 		{
 			chili::print("\n\n There's no data to save to the file \n\n");
 		}
 
 		else
 		{
+			char Pname[30];
 			chili::print("\n Save file as: ");
+			chili::read(Pname, 30);
 
-			chili::read(filename, 10);
-			std::ofstream out(filename); /// wykorzystaæ ifstream z pliku o nazwie prototype.txt, ju¿ coraz bli¿ej rozwi¹zania
+			std::ifstream in(filename); 
+			std::ofstream out(Pname);
+
+			for (char c = in.get(); in.good(); c = in.get()) //czytam plik tymczasowy
+			{
+				out.put(c); // i dla ka¿dego pojedynczego odczytanego znaku wstawiam go do nowego pliku
+			}
+			chili::print("\n\n");
+
+			in.close();
+			out.close();
+			char* p = &Pname[0];
+			for (int i = 0; *p >= 0 ; i++,p++)
+			{
+				filename[i] = *p;
+			}
+
+			system("del P.txt");
 		}
 	}
 
+public:
+	bool go = true;
 private:
-
 	char filename[30];
-	char SomeTypedName[10];
-	char SomeTypedValue[3];
 };
 
 
 int main()
 {
 	Database data;	
-	while (true)
+	while (data.go)
 	{
 		data.select();
 	}

@@ -2,3 +2,5 @@ cyprian 12
 adam 12
 krzysztof 33
 maja 66
+kuba 6
+michal 33

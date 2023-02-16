@@ -1,3 +1,0 @@
-cyprian 1
-adam 2
-kuba 3
