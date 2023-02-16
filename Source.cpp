@@ -80,14 +80,14 @@ namespace chili
 class Database
 {
 public:
-
+	//ok
 	void select() 
 	{
 		chili::print("\n(l)oad  (s)ave  (q)uit  (a)dd  (p)rint?");
 		char odp = _getch();
 		choice(odp);
 	}
-
+	//ok
 	void choice(char p)
 	{
 		if (p == 'q')
@@ -120,7 +120,7 @@ public:
 			chili::print("\n");
 		}
 	}
-
+	//ok
 	void print(char* fileN) {
 
 		chili::print("\n\n");
@@ -133,28 +133,48 @@ public:
 
 		chili::print("\n\n");
 	}
-
+	//ok
 	void add(char* fileN)
 	{
 		std::ofstream out(fileN, std::ios::app);
 
-		if (out.fail())
+		const char verify = filename[0];
+		if (verify < 0)
 		{
-			chili::print("\n u don't have a file yet ;)");
+			char p[] = "Prototyp.txt";
+			for (int i = 0; i < 13; i++)
+			{
+				filename[i] = p[i];
+			}
+
+			std::ofstream out2( filename, std::ios::app);
+			chili::print("\n u created a prototype file ;)");
 
 			chili::print("\n\n Enter Name: ");
-			chili::read(SomeTypedName, 10);
+			for (char c = _getch(); c != 13; c = _getch())
+			{
+				_putch(c);
+				out2.put(c);
+			}
+
+			char space = ' ';
+			out2.put(space);
 
 			chili::print("\n\n Enter value: ");
-			chili::read(SomeTypedValue, 3);
-
-		}
-		else if (out.good())
-		{
-			bool once = true;
-			while (once)
+			for (char c = _getch(); c != 13; c = _getch())
 			{
-				
+				_putch(c);
+				out2.put(c);
+			}
+
+			char endline = '\n';
+			out2.put(endline);
+			chili::print("\n");
+			
+		}
+
+		if (out.good())
+		{
 				chili::print("\n\n Enter Name: ");
 				for (char c = _getch(); c != 13; c = _getch())
 				{
@@ -175,16 +195,14 @@ public:
 				char endline = '\n';
 				out.put(endline);
 				chili::print("\n");
-				once = false;
-			}
 		}
 	}
-
+	//ok
 	void load()
 	{
 		chili::print("\n\nEnter a file name to load: ");
 
-		chili::read(filename, 10);
+		chili::read(filename, 30);
 		std::ifstream in(filename);
 
 		chili::print("\n\nContent of the file\n==================== \n\n");
@@ -198,37 +216,25 @@ public:
 
 	void save(char* name, char* value)
 	{
-		const char verify = filename[0]; // wa¿na rzecz, narazie zostaw
+		const char verify = filename[0];
 		
-		if (verify < 0 && *value >= 0)
+		if (*value < 0 && verify < 0 && *name < 0)
+		{
+			chili::print("\n\n There's no data to save to the file \n\n");
+		}
 
+		else
 		{
 			chili::print("\n Save file as: ");
 
 			chili::read(filename, 10);
-			std::ofstream out(filename);
-
-			const char* const pEnd = name + 10;
-			for (char* c = name; *c != 0 && (name+1 < pEnd); c = name, name++)
-			{
-				out.put(*c);
-			}
-
-			const char* const vEnd = value + 3;
-			for (char* c = value; *c != 0 && (name+1 < vEnd); c = value, value++)// poprawiæ usterke z wyœwietlaniem
-			{
-				out.put(*c);
-			}
-		}
-		else if(*value < 0 && verify < 0)
-		{
-			chili::print("\n\n There's no data to save to the file \n\n");
+			std::ofstream out(filename); /// wykorzystaæ ifstream z pliku o nazwie prototype.txt, ju¿ coraz bli¿ej rozwi¹zania
 		}
 	}
 
 private:
 
-	char filename[10];
+	char filename[30];
 	char SomeTypedName[10];
 	char SomeTypedValue[3];
 };
