@@ -162,11 +162,15 @@ public:
 			out2.put(space);
 
 			chili::print("\n\n Enter value: ");
-			for (char c = _getch(); c != 13; c = _getch())
+			char number[5];
+			chili::read(number, 5);
+			chili::str2int(number);
+
+			for (int i = 0; i < chili::str2int(number) ; i++)
 			{
-				_putch(c);
-				out2.put(c);
+				out2.put('=');
 			}
+			
 
 			char endline = '\n';
 			out2.put(endline);
@@ -187,10 +191,13 @@ public:
 				out.put(space);
 
 				chili::print("\n\n Enter value: ");
-				for (char c = _getch(); c != 13; c = _getch())
+				char number[5];
+				chili::read(number, 5);
+				chili::str2int(number);
+
+				for (int i = 0; i < chili::str2int(number); i++)
 				{
-					_putch(c);
-					out.put(c);
+					out.put('=');
 				}
 
 				char endline = '\n';
