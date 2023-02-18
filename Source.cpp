@@ -141,63 +141,7 @@ public:
 	}
 	//ok
 	void add()
-	{
-
-		std::ifstream in(filename);
-
-		if (!in) 
-		{
-			char p[] = "P.txt";
-			for (int i = 0; i < 6; i++)
-			{
-				filename[i] = p[i];
-			}
-
-			std::ofstream out( filename);
-			chili::print("\n u created a prototype file ;)");
-
-			for (char* d = &tekst[0]; *d >= 0; d++)
-			{
-				out.put(*d);
-			}
-
-			if (afterOneLoop)
-			{
-				afterOneLoop = false;
-			}
-			else
-			{
-				tekst[i] = '\n';
-				i++;
-				out.put('\n');
-			}
-
-			chili::print("\n\n Enter Name: ");
-			chili::read(&tekst[i], 500);
-
-			for (char* c = &tekst[i]; *c > 0; i++, c++)
-			{
-				out.put(*c);
-			}
-			i++;
-
-			char space = ' ';
-			tekst[i] = space;
-			i++;
-			out.put(space);
-
-			chili::print("\n\n Enter Value: ");
-			chili::read(&tekst[i], 500);
-
-			for (char* c = &tekst[i]; *c > 0; i++, c++)
-			{
-				out.put(*c);
-			}
-			i++;
-		}
-
-		else if (in)
-		{
+	{		
 			std::ofstream out(filename);
 
 			for (char* d = &tekst[0]; *d >= 0; d++)
@@ -205,40 +149,43 @@ public:
 				out.put(*d);
 			}
 
-			if (afterOneLoop)
-			{
-				afterOneLoop = false;
-			}
-			else
+			if (!afterOneLoop || once2)
 			{
 				tekst[i] = '\n';
 				i++;
 				out.put('\n');
+				once2 = false;
+			}
+			if (afterOneLoop)
+			{
+				afterOneLoop = false;
 			}
 
 			chili::print("\n\n Enter Name: ");
-			chili::read(&tekst[i], 500);
+			chili::read(&tekst[i], 1000);
 
 			for (char* c = &tekst[i]; *c > 0; i++, c++)
 			{
 				out.put(*c);
 			}
-			i++;
 
 			char space = ' ';
 			tekst[i] = space;
 			i++;
 			out.put(space);
 
+			char number[4];
 			chili::print("\n\n Enter Value: ");
-			chili::read(&tekst[i], 500);
+			chili::read(number, 4);
 
-			for (char* c = &tekst[i]; *c > 0; i++, c++)
+			char* end  = &tekst[chili::str2int(number) + i];
+			for (char* c = &tekst[i] ; c < end;i++, c++)
 			{
-				out.put(*c);
+				tekst[i] = '=';
+				out.put('=');
 			}
+			tekst[i] = 0;
 			i++;
-		}
 	}
 	//ok
 	void load()
@@ -254,14 +201,15 @@ public:
 		{
 			_putch(c);
 		}
+		once2 = true;
 		chili::print("\n\n");
 	} 
 	//ok
 	void save()
 	{
-		const char verify = filename[0];
+		const char verify = tekst[0];
 		
-		if ( verify < 0 ) // próbowa³em na fail ale nie dzia³a
+		if ( verify < 0 ) 
 		{
 			chili::print("\n\n There's no data to save to the file \n\n");
 		}
@@ -289,19 +237,32 @@ public:
 			{
 				filename[i] = *p;
 			}
-
-			system("del P.txt");
 		}
 	}
 	//ok
 	void checkFileContent()
 	{
 		chili::print("\n");
-		std::ifstream in("plik.txt");
+		std::ifstream in(filename);
 		for (char c = in.get();in.good(); c = in.get(), i++ )
 		{
 			tekst[i] = c;
-			_putch(c);
+		}
+	}
+	//ok
+	void checkFileExists()
+	{	
+		std::ifstream in("P.txt");
+		if (in)
+		{
+			in.close();
+			system("del P.txt");
+		}
+		
+		char p[] = "P.txt";
+		for (int i = 0; i < 6; i++)
+		{
+			filename[i] = p[i];
 		}
 	}
 
@@ -309,9 +270,10 @@ public:
 	bool go = true;	
 private:
 	int i = 0;
-	char tekst[500];
+	char tekst[1000];
 	char filename[30];
 	bool once = true;
+	bool once2 = false;
 	bool afterOneLoop = true;
 };
 
@@ -319,6 +281,9 @@ private:
 int main()
 {
 	Database data;	
+
+	data.checkFileExists();
+
 	while (data.go)
 	{
 		data.select();
