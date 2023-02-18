@@ -207,7 +207,7 @@ public:
 	//ok
 	void save()
 	{
-		const char verify = tekst[0];
+		const char verify = filename[0];
 		
 		if ( verify < 0 ) 
 		{
