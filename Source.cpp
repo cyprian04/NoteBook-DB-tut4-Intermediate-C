@@ -2,12 +2,37 @@
 #include <fstream>
 namespace chili
 {
+	void printFixed(const char* s, int w)
+	{
+		int n = 0;
+		for (; *s!=0 ; s++)
+		{
+			n++;
+			_putch(*s);
+		}
+
+		for (; n < w; n++)
+		{
+			_putch(' ');
+		}
+	}
+
 	void print(const char* s)
 	{
 		for (; *s != 0; s++)
 		{
 			_putch(*s);
 		}
+	}
+
+	void strcpy(const char* pSrc, char* pDst, int maxBuffSize)
+	{
+		int n = 0;
+		for (; *pSrc!= 0 && (n + 1 < maxBuffSize); pSrc++, pDst++, n++)
+		{
+			 *pDst = *pSrc;
+		}
+		*pDst = 0;
 	}
 
 	void read(char* buf, int maxSize)
@@ -75,34 +100,135 @@ namespace chili
 		*buf = 0;
 		strrev(pStart);
 	}
+
+	class Database
+	{
+	private:
+		class Entry
+		{
+		public:
+			Entry() = default;
+			Entry(const char* name, int value)
+				:
+				value(value)
+			{
+				strcpy(name, this->name, sizeof( this->name ));
+			}
+			void Print() const
+			{
+				printFixed(name, nameBufferSize - 1);
+				_putch('|');
+				for (int n = 0; n < value; n++)
+				{
+					_putch('=');
+				}
+				_putch('\n');
+			}
+			void Serialize(std::ofstream& out) const
+			{
+				out.write(name, sizeof(name));
+				out.write(reinterpret_cast<const char*>(&value), sizeof(value));
+			}
+			void Deserialize(std::ifstream& in)
+			{
+				in.read(name, sizeof(name));
+				in.read(reinterpret_cast<char*>(&value), sizeof(value));
+			}
+		private:
+			static constexpr int nameBufferSize = 10;
+			char name[nameBufferSize];
+			int value;
+		};
+	public:
+		void Load(const char* filename)
+		{
+			std::ifstream in(filename, std::ios::binary);
+			in.read(reinterpret_cast< char*>(&curNumberEntries), sizeof(curNumberEntries));
+			for (int i = 0; i < curNumberEntries; i++)
+			{
+				entries[i].Deserialize(in);
+			}
+		}
+		void Save(const char* filename) const
+		{
+			std::ofstream out(filename, std::ios::binary);
+			out.write(reinterpret_cast<const char*>(&curNumberEntries), sizeof(curNumberEntries));
+			for (int i = 0; i < curNumberEntries; i++)
+			{
+				entries[i].Serialize(out);
+			}
+		}
+		void Print() const
+		{
+			for (int i = 0; i < curNumberEntries ; i++)
+			{
+				entries[i].Print();
+			}
+		}
+		void Add(const char* name, int val)
+		{
+			if (curNumberEntries < maxNumberEntries)
+			{
+				entries[curNumberEntries++] = { name, val }; // mo¿emy zapisaæ tak ++, bo kompilator zwiêkszy wartoœæ po przejœciu
+			}
+		}
+	private:
+		static constexpr int maxNumberEntries = 16;
+		Entry entries[maxNumberEntries];
+		int curNumberEntries = 0;
+	};
 }
+
 
 int main()
 {
-	// const char data[] = "abc\n\n123";
-	// std::ofstream out("test.txt", std::ios::binary);
-	// // jeœli zapisujemy dane do pliku które zawieraj¹ tylko liczby ipt. to powinno siê je zapisywaæ w formacie std::ios::binary  //
-	// for ( char c: data )
-	// {
-	// 	if (c == 0)
-	// 	{
-	// 		break;
-	// 	}
-	// 	out.put(c);
-	// }
-	// 
-	// std::ofstream out2("boi.dat", std::ios::binary);
-	// const int myInt = 69420;
-	// out2.write(reinterpret_cast<const char*>(&myInt), sizeof(myInt)); // podajemy rozmiar zmiennej( int w c++ to 4 bajty (32 bity))
-	// // do funkcji read i write z biblioteki fstream trzeba stosowaæ reinterpret_cast<char*>, poniewa¿ przyjmuj¹ one wskaŸnik jako parametr
+	chili::Database db;
 
-	std::ifstream in2("boi.dat", std::ios::binary); // odczytywanie danych, które wpisaliœmy wczeœniej do pliku
-	int data2;
-	in2.read(reinterpret_cast<char*>(&data2), sizeof(data2)); 
-	char buffer[10];
-	chili::int2str(data2, buffer, 10);
-	chili::print(buffer);
+	char buffer[256];
+	char buffer2[256];
+	bool quitting = false;
 
-	while (!_kbhit());
+	do
+	{
+		chili::print("(l)oad (s)ave (a)dd (q)uit or (p)rint?");
+		char response = _getch();
+		switch (response)
+		{
+		case 'l':
+			chili::print("\nEnter file name: ");
+			chili::read(buffer, sizeof(buffer));
+			db.Load(buffer);
+			_putch('\n');
+			break;
+
+		case 's':
+			chili::print("\nEnter file name: ");
+			chili::read(buffer, sizeof(buffer));
+			db.Save(buffer);
+			_putch('\n');
+			break;
+
+		case 'a':
+			chili::print("\nEnter file name: ");
+			chili::read(buffer, sizeof(buffer));
+			chili::print("\nEnter file value: ");
+			chili::read(buffer2, sizeof(buffer2));
+			_putch('\n');
+			db.Add(buffer, chili::str2int(buffer2));
+			break;
+
+		case 'p':
+			chili::print("\n\n		Beautiful Chart Bitches!");
+			chili::print("\n		------------------------\n\n");
+			db.Print();
+			_putch('\n');
+			break;
+
+		case 'q':
+			quitting = true;
+			break;
+		}
+	} while (!quitting);
+
 	return 0;
 }
