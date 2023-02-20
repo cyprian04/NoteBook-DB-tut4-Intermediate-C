@@ -1,5 +1,7 @@
 #include <conio.h>
 #include <fstream>
+#include <random>
+
 namespace chili
 {
 	void printFixed(const char* s, int w)
@@ -236,18 +238,47 @@ int main()
 	constexpr int filesize = 3359400 + 1;
 	char* wrap_string = new char[filesize];
 	int i = 0;
+
 	for (char c = wrap_file.get(); wrap_file.good(); c = wrap_file.get())
 	{
 		wrap_string[i++] = c;
 	}
 	wrap_string[i] = 0;
 
-	char buffer[256];
+	static constexpr int snippedSize = 400;
+	std::minstd_rand rng(std::random_device{}());
+	std::uniform_int_distribution<int> dist(0, i - snippedSize);
+	bool quitting = false;
 
-	chili::int2str(i, buffer, sizeof(buffer));
-	chili::print(buffer);
+	do
+	{
+		chili::print("(r)ead a snipped text or (q)uit? ");
+		char response = _getch();
+		switch (response) 
+		{
+			case 'r':
+			{
+				_putch('\n');
+				_putch('\n');
+				int nStart = dist(rng);
+				for (int i = nStart; i < nStart + snippedSize; i++ )
+				{
+					_putch(wrap_string[i]);
+				}
+				_putch('\n');
+				break;
+			}
+		
+			case'q':
+			{
+				quitting = true;
+				break;
+			}
+		}
+	} while (!quitting);
 
 	delete[] wrap_string;
+
 	while (!_kbhit());
 	return 0;
 }
