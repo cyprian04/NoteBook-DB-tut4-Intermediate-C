@@ -181,7 +181,7 @@ namespace chili
 
 void MakeDB() 
 {
-	chili::Database* db = new chili::Database; // stworzenie wskaŸnika(do Heap, czyli dynamicznie)
+	chili::Database db;
 
 	char buffer[256];
 	char buffer2[256];
@@ -196,14 +196,14 @@ void MakeDB()
 		case 'l':
 			chili::print("\nEnter file name: ");
 			chili::read(buffer, sizeof(buffer));
-			db ->Load(buffer); // za ka¿dym wywo³aniem wskaŸnika ¿eby siê odwo³aæ do zmiennej lub funkcji stosujemy (->)
+			db.Load(buffer);
 			_putch('\n');
 			break;
 
 		case 's':
 			chili::print("\nEnter file name: ");
 			chili::read(buffer, sizeof(buffer));
-			db ->Save(buffer);
+			db.Save(buffer);
 			_putch('\n');
 			break;
 
@@ -213,13 +213,13 @@ void MakeDB()
 			chili::print("\nEnter file value: ");
 			chili::read(buffer2, sizeof(buffer2));
 			_putch('\n');
-			db->Add(buffer, chili::str2int(buffer2));
+			db.Add(buffer, chili::str2int(buffer2));
 			break;
 
 		case 'p':
 			chili::print("\n\n		Beautiful Chart Bitches!");
 			chili::print("\n		------------------------\n\n");
-			db->Print();
+			db.Print();
 			_putch('\n');
 			break;
 
@@ -228,13 +228,26 @@ void MakeDB()
 			break;
 		}
 	} while (!quitting);
-
-	delete db; // za ka¿dym razem jak tworzymy wskaŸnik do heap, jeœli ju¿ z niego nie korzystamy TRZEBA zastosowaæ delete aby zwolniæ pamiêæ
 }
 
 int main()
 {
-	MakeDB();
+	std::ifstream wrap_file("wrap.txt");
+	constexpr int filesize = 3359400 + 1;
+	char* wrap_string = new char[filesize];
+	int i = 0;
+	for (char c = wrap_file.get(); wrap_file.good(); c = wrap_file.get())
+	{
+		wrap_string[i++] = c;
+	}
+	wrap_string[i] = 0;
 
+	char buffer[256];
+
+	chili::int2str(i, buffer, sizeof(buffer));
+	chili::print(buffer);
+
+	delete[] wrap_string;
+	while (!_kbhit());
 	return 0;
 }
