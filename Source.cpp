@@ -179,10 +179,9 @@ namespace chili
 	};
 }
 
-
-int main()
+void MakeDB() 
 {
-	chili::Database db;
+	chili::Database* db = new chili::Database; // stworzenie wskaŸnika(do Heap, czyli dynamicznie)
 
 	char buffer[256];
 	char buffer2[256];
@@ -197,14 +196,14 @@ int main()
 		case 'l':
 			chili::print("\nEnter file name: ");
 			chili::read(buffer, sizeof(buffer));
-			db.Load(buffer);
+			db ->Load(buffer); // za ka¿dym wywo³aniem wskaŸnika ¿eby siê odwo³aæ do zmiennej lub funkcji stosujemy (->)
 			_putch('\n');
 			break;
 
 		case 's':
 			chili::print("\nEnter file name: ");
 			chili::read(buffer, sizeof(buffer));
-			db.Save(buffer);
+			db ->Save(buffer);
 			_putch('\n');
 			break;
 
@@ -214,13 +213,13 @@ int main()
 			chili::print("\nEnter file value: ");
 			chili::read(buffer2, sizeof(buffer2));
 			_putch('\n');
-			db.Add(buffer, chili::str2int(buffer2));
+			db->Add(buffer, chili::str2int(buffer2));
 			break;
 
 		case 'p':
 			chili::print("\n\n		Beautiful Chart Bitches!");
 			chili::print("\n		------------------------\n\n");
-			db.Print();
+			db->Print();
 			_putch('\n');
 			break;
 
@@ -229,6 +228,13 @@ int main()
 			break;
 		}
 	} while (!quitting);
+
+	delete db; // za ka¿dym razem jak tworzymy wskaŸnik do heap, jeœli ju¿ z niego nie korzystamy TRZEBA zastosowaæ delete aby zwolniæ pamiêæ
+}
+
+int main()
+{
+	MakeDB();
 
 	return 0;
 }
