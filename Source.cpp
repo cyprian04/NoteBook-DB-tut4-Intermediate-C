@@ -234,11 +234,17 @@ void MakeDB()
 
 int main()
 {
-	std::ifstream wrap_file("wrap.txt");
-	constexpr int filesize = 3359400 + 1;
-	char* wrap_string = new char[filesize];
-	int i = 0;
+	char buffer[256];
+	chili::print("Enter a file name: ");
+	chili::read(buffer, sizeof(buffer));
+	std::ifstream wrap_file(buffer);
 
+	wrap_file.seekg(0, std::ios::end);
+	const int filesize = wrap_file.tellg();
+	wrap_file.seekg(0, std::ios::beg);
+	char* wrap_string = new char[filesize + 1];
+
+	int i = 0;
 	for (char c = wrap_file.get(); wrap_file.good(); c = wrap_file.get())
 	{
 		wrap_string[i++] = c;
@@ -252,7 +258,7 @@ int main()
 
 	do
 	{
-		chili::print("(r)ead a snipped text or (q)uit? ");
+		chili::print("\n(r)ead a snipped text or (q)uit? ");
 		char response = _getch();
 		switch (response) 
 		{
@@ -279,6 +285,5 @@ int main()
 
 	delete[] wrap_string;
 
-	while (!_kbhit());
 	return 0;
 }
