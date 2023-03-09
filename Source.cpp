@@ -1,6 +1,7 @@
 #include <conio.h>
 #include <fstream>
 #include <random>
+#include <vector>
 
 namespace chili
 {
@@ -145,39 +146,37 @@ namespace chili
 		void Load(const char* filename)
 		{
 			std::ifstream in(filename, std::ios::binary);
-			in.read(reinterpret_cast< char*>(&curNumberEntries), sizeof(curNumberEntries));
-			for (int i = 0; i < curNumberEntries; i++)
+			int nEntries = entries.size();
+			in.read(reinterpret_cast< char*>(&nEntries), sizeof(nEntries));
+			//entries.resize(nEntries); // mo¿emy zrobiæ resize poniewa¿ chcemy dokonaæ operacji na instniej¹cych obiektach lub size
+			for ( auto& e: entries)
 			{
-				entries[i].Deserialize(in);
+				e.Deserialize(in);
 			}
 		}
 		void Save(const char* filename) const
 		{
 			std::ofstream out(filename, std::ios::binary);
-			out.write(reinterpret_cast<const char*>(&curNumberEntries), sizeof(curNumberEntries));
-			for (int i = 0; i < curNumberEntries; i++)
+			const int size = entries.size();
+			out.write(reinterpret_cast<const char*>(&size), sizeof(size));
+			for (const Entry& e: entries)
 			{
-				entries[i].Serialize(out);
+				e.Serialize(out);
 			}
 		}
 		void Print() const
 		{
-			for (int i = 0; i < curNumberEntries ; i++)
+			for (const Entry& e: entries)
 			{
-				entries[i].Print();
+				e.Print();
 			}
 		}
 		void Add(const char* name, int val)
 		{
-			if (curNumberEntries < maxNumberEntries)
-			{
-				entries[curNumberEntries++] = { name, val }; // mo¿emy zapisaæ tak ++, bo kompilator zwiêkszy wartoœæ po przejœciu
-			}
+			entries.emplace_back(name, val);
 		}
 	private:
-		static constexpr int maxNumberEntries = 16;
-		Entry entries[maxNumberEntries];
-		int curNumberEntries = 0;
+		std::vector<Entry> entries;
 	};
 }
 
@@ -210,9 +209,9 @@ void MakeDB()
 			break;
 
 		case 'a':
-			chili::print("\nEnter file name: ");
+			chili::print("\nEnter name: ");
 			chili::read(buffer, sizeof(buffer));
-			chili::print("\nEnter file value: ");
+			chili::print("\nEnter value: ");
 			chili::read(buffer2, sizeof(buffer2));
 			_putch('\n');
 			db.Add(buffer, chili::str2int(buffer2));
@@ -234,6 +233,7 @@ void MakeDB()
 
 int main()
 {
+	MakeDB();
 	char buffer[256];
 	chili::print("Enter a file name: ");
 	chili::read(buffer, sizeof(buffer));
