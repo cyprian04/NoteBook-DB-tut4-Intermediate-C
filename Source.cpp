@@ -190,7 +190,7 @@ void MakeDB()
 
 	do
 	{
-		chili::print("(l)oad (s)ave (a)dd (q)uit or (p)rint?");
+		chili::print("\n(l)oad (s)ave (a)dd (q)uit or (p)rint?");
 		char response = _getch();
 		switch (response)
 		{
@@ -218,7 +218,7 @@ void MakeDB()
 			break;
 
 		case 'p':
-			chili::print("\n\n		Beautiful Chart Bitches!");
+			chili::print("\n\n		Beautiful Chart!");
 			chili::print("\n		------------------------\n\n");
 			db.Print();
 			_putch('\n');
